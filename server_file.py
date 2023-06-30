@@ -1,7 +1,6 @@
 import mimetypes
 import os
 import socket
-import typing
 
 SERVER_ROOT = os.path.abspath("www")
 NOT_FOUND_RESPONSE = b"""\

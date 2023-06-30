@@ -38,6 +38,18 @@ with socket.socket() as server_sock:
         with client_sock:
             try:
                 request = Request.from_socket(client_sock)
+                if "100-continue" in request.headers.get("expect", ""):
+                    client_sock.sendall(b"HTTP/1.1 100 Continue\r\n\r\n")
+
+                try:
+                    content_length = int(
+                        request.headers.get("content-length", "0"))
+                except ValueError:
+                    content_length = 0
+                if content_length:
+                    body = request.body.read(content_length)
+                    print("Request body", body)
+
                 if request.method != "GET":
                     client_sock.sendall(METHOD_NOT_ALLOWED_RESPONSE)
                     continue
